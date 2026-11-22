@@ -19,7 +19,7 @@ One Compose project `antriaja` with two services. `app` joins the existing Docke
 | Counter staff | Counter PIN link → signed cookie bound to one counter | Call next, serve, skip, re-queue at that counter |
 | Participant | Token in URL, no login | See own QR and status |
 
-Assumption to confirm: a gate is one PIN per event. It is derived from the two-role decision and was not discussed explicitly.
+Decided: the gate has one PIN per event, and each counter has its own. Staff open the station link and type the PIN; the link alone grants nothing.
 
 ## Data model
 

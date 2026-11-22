@@ -13,6 +13,8 @@ Terms used in AntriAja v1. Use these exact words in code, issues and docs.
 | **Number** | The ticket label shown to people, counter code plus sequence (`A12`). Never changes while the ticket stays at its counter, including a re-queue. If an admin moves the ticket to another counter, it gets a new number from that counter's sequence and the old one is shown as "was A12". |
 | **Counter** | A service point (`A`, `B`, ...) with its own queue. Status: `open`, `paused`, `closed`. |
 | **Gate** | The entrance station where check-in scans happen. |
+| **Station** | A place staff work: the **Gate** or one **Counter**. Staff enter a station with its **PIN**. |
+| **PIN** | Short numeric code that unlocks a station. Shared by the admin separately from the station link. One PIN for the Gate per event, one per Counter. |
 | **Staff** | A person working a gate or a counter, authenticated by a station PIN link. No account. |
 | **Admin** | A person who manages events and counters, authenticated by Google sign-in on an email allowlist. |
 | **Call** | Counter staff call the next waiting ticket in their counter. Status `called`. |
