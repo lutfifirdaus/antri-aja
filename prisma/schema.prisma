@@ -1,0 +1,102 @@
+// Data model: see ARCHITECTURE.md ("Data model"). Terms: GLOSSARY.md.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CounterStatus {
+  open
+  paused
+  closed
+}
+
+enum TicketStatus {
+  waiting
+  called
+  served
+  skipped
+}
+
+enum ParticipantSource {
+  self
+  manual
+}
+
+model Event {
+  id               String   @id @default(uuid()) @db.Uuid
+  slug             String   @unique
+  name             String
+  maxParticipants  Int?     @map("max_participants") // null = no cap
+  registrationOpen Boolean  @default(false) @map("registration_open")
+  gatePinHash      String?  @map("gate_pin_hash")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  counters     Counter[]
+  participants Participant[]
+  tickets      Ticket[]
+
+  @@map("events")
+}
+
+model Counter {
+  id         String        @id @default(uuid()) @db.Uuid
+  eventId    String        @map("event_id") @db.Uuid
+  code       String // A, B, ...
+  name       String
+  status     CounterStatus @default(open)
+  pinHash    String?       @map("pin_hash")
+  nextNumber Int           @default(1) @map("next_number")
+
+  event   Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tickets Ticket[]
+
+  @@unique([eventId, code])
+  @@map("counters")
+}
+
+model Participant {
+  id        String            @id @default(uuid()) @db.Uuid
+  eventId   String            @map("event_id") @db.Uuid
+  name      String
+  phone     String?
+  token     String            @unique
+  source    ParticipantSource
+  createdAt DateTime          @default(now()) @map("created_at")
+
+  event  Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  ticket Ticket?
+
+  @@index([eventId])
+  @@map("participants")
+}
+
+model Ticket {
+  id             String       @id @default(uuid()) @db.Uuid
+  eventId        String       @map("event_id") @db.Uuid
+  // UNIQUE: exactly-once check-in. A second insert fails and the API returns 409.
+  participantId  String       @unique @map("participant_id") @db.Uuid
+  counterId      String       @map("counter_id") @db.Uuid
+  number         Int // shown as counter.code + number; never changes at the same counter
+  queueOrder     Int          @map("queue_order")
+  status         TicketStatus @default(waiting)
+  requeueCount   Int          @default(0) @map("requeue_count")
+  // Set when an admin moves the ticket to another counter, e.g. "A12" (shown as "was A12").
+  previousNumber String?      @map("previous_number")
+  checkedInAt    DateTime     @default(now()) @map("checked_in_at")
+  calledAt       DateTime?    @map("called_at")
+  servedAt       DateTime?    @map("served_at")
+
+  event       Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  participant Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  counter     Counter     @relation(fields: [counterId], references: [id])
+
+  @@unique([counterId, number])
+  @@index([counterId, status, queueOrder])
+  @@index([eventId])
+  @@map("tickets")
+}

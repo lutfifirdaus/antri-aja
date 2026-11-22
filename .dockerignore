@@ -1,0 +1,13 @@
+.git
+.next
+node_modules
+src/generated
+.env*
+!.env.example
+.claude
+.mcp.json
+skills-lock.json
+docs
+*.md
+compose*.yaml
+Dockerfile

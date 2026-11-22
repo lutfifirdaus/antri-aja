@@ -1,0 +1,10 @@
+# Used on the VPS: docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+# The app joins the existing Docker network `web` so cloudflared can reach it.
+services:
+  app:
+    ports: !reset []
+    networks: [private, web]
+
+networks:
+  web:
+    external: true
