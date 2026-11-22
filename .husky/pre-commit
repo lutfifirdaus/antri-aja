@@ -1,0 +1,30 @@
+#!/bin/sh
+# Blocks commits that contain secrets. Scans the staged versions of all files.
+# Uses a local gitleaks binary, else the pinned Docker image. Fails closed.
+GITLEAKS_IMAGE="ghcr.io/gitleaks/gitleaks:v8.30.1"
+
+tmp=$(mktemp -d) || exit 1
+out=$(mktemp) || exit 1
+trap 'rm -rf "$tmp" "$out"' EXIT
+# Export the index (what would be committed) so the scan needs no git inside a container.
+git checkout-index -a --prefix="$tmp/" || { echo "pre-commit: could not export staged files" >&2; exit 1; }
+
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks dir "$tmp" --redact --no-banner -v >"$out" 2>&1
+elif command -v docker >/dev/null 2>&1; then
+  docker run --rm --user "$(id -u):$(id -g)" -v "$tmp:/scan:ro,z" "$GITLEAKS_IMAGE" dir /scan --redact --no-banner -v >"$out" 2>&1
+else
+  echo "pre-commit: gitleaks is not installed and Docker is unavailable. Install gitleaks, then retry." >&2
+  exit 1
+fi
+status=$?
+cat "$out"
+if [ $status -ne 0 ]; then
+  echo "pre-commit: secret scan failed (exit $status). Commit blocked." >&2
+  exit $status
+fi
+# A scan that read nothing or skipped paths is not a clean scan.
+if grep -qE "skipping directory|scanned ~0 bytes" "$out"; then
+  echo "pre-commit: scan read nothing or skipped paths; refusing to treat it as clean. Commit blocked." >&2
+  exit 1
+fi
