@@ -30,13 +30,13 @@ counters     id, event_id, code (unique per event: A, B, ...), name,
              status (open|paused|closed), pin_hash, next_number
 participants id, event_id, name, phone (null), token (unique), source (self|manual), created_at
 tickets      id, event_id, participant_id (UNIQUE), counter_id, number, queue_order,
-             status (waiting|called|served|skipped), requeue_count,
+             status (waiting|called|served|skipped), requeue_count, previous_number (null),
              checked_in_at, called_at, served_at
              UNIQUE (counter_id, number)
 ```
 
 - **Exactly-once check-in** comes from `UNIQUE(participant_id)` on tickets. A second insert fails and returns `409`.
-- **Number** is `counter.code + next_number`. It never changes.
+- **Number** is `counter.code + next_number`. It never changes at the same counter (including a re-queue). An admin move to another counter issues a new number from the destination counter's sequence and keeps the old one as `previous_number` (shown as "was A12").
 - **Order** in the line is `queue_order`. A re-queue sets `queue_order` to the end and `requeue_count = 1`.
 - Check-in runs in one transaction under a per-event advisory lock: pick the open counter with the fewest `waiting` tickets (ties: lowest code), increment `next_number`, insert the ticket.
 

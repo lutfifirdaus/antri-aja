@@ -10,7 +10,7 @@ Terms used in AntriAja v1. Use these exact words in code, issues and docs.
 | **QR** | The QR code of a participant's token. Valid for **one** check-in. |
 | **Check-in** | The single scan at the gate. Creates the participant's ticket and assigns a counter. A second scan is rejected (`already checked in`). |
 | **Ticket** | A participant's place in a counter's queue: counter, number, status. One ticket per participant. |
-| **Number** | The ticket label shown to people, counter code plus sequence (`A12`). Never changes once issued. |
+| **Number** | The ticket label shown to people, counter code plus sequence (`A12`). Never changes while the ticket stays at its counter, including a re-queue. If an admin moves the ticket to another counter, it gets a new number from that counter's sequence and the old one is shown as "was A12". |
 | **Counter** | A service point (`A`, `B`, ...) with its own queue. Status: `open`, `paused`, `closed`. |
 | **Gate** | The entrance station where check-in scans happen. |
 | **Staff** | A person working a gate or a counter, authenticated by a station PIN link. No account. |
