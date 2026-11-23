@@ -56,7 +56,7 @@ Staff (PIN cookie):
 - `GET /api/staff/queue` (counter: waiting list)
 
 Admin (Google session):
-- `POST|PATCH /api/admin/events`, `POST|PATCH /api/admin/counters`, `POST /api/admin/counters/:id/pin`
+- `POST|PATCH /api/admin/events`, `POST|PATCH /api/admin/counters`, `POST /api/admin/counters/:id/pin`, `POST /api/admin/events/:id/gate-pin`
 - `POST /api/admin/tickets/:id/move` `{counterId}`
 - `DELETE /api/admin/events/:id/participants` (purge)
 

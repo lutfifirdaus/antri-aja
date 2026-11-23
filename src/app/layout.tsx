@@ -11,8 +11,8 @@ const jakarta = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "AntriAja",
-  description: "Pengelolaan antrean untuk acara",
+  title: { template: "%s · AntriAja", default: "AntriAja" },
+  description: "Antrean untuk acara yang dibagikan di tempat.",
 };
 
 export const viewport: Viewport = {
