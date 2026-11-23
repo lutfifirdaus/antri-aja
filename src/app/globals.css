@@ -1,17 +1,62 @@
+/* Design tokens: see docs/ui.md ("Look", "Brand"). Single light theme on purpose. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --surface: #f7f5f0; /* warm off-white: less glare than #fff on phones outdoors */
+  --surface-raised: #ffffff;
+  --surface-sunken: #ece8df;
+  --ink: #1a1f1c;
+  --ink-muted: #545b57; /* 6.4:1 on --surface */
+  --line: #d6d1c6; /* decorative only, not for control borders */
+  --line-strong: #868b86; /* 3.4:1 on --surface-raised, for control borders */
+
+  --accent: #0f6b4b; /* the one accent; white on it is 6.5:1 */
+  --on-accent: #ffffff;
+  --accent-soft: #d9eee6;
+
+  /* Status colours, reserved: amber = paused, red = error or closed. */
+  --warning-soft: #fdf0c8;
+  --warning-ink: #6b4a00;
+  --warning-line: #a87a00;
+  --danger: #b42318;
+  --danger-soft: #fbe4e1;
+
+  --focus: #1f5fd6;
+
+  --font-sans: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --tap-min: 48px;
+  --tap-primary: 64px;
+
+  --text-caption: 13px;
+  --text-label: 15px;
+  --text-body: 17px;
+  --text-heading: 20px;
+  --text-title: 28px;
+
+  color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html {
   height: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 html,
@@ -24,26 +69,62 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ink);
+  background: var(--surface);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
 a {
   color: inherit;
-  text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+a[href],
+button,
+summary,
+select,
+label[for] {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.wordmark {
+  font-weight: 800;
+  font-size: var(--text-heading);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.wordmark span {
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
