@@ -77,3 +77,11 @@ Phone-first, one screen, no navigation. The page mirrors the ticket status; it s
 ## Out of scope for v1
 
 Dark mode, branding beyond the header and favicon, sound/vibration/push, staff pause toggle, analytics. Revisit after the dry run (issue #12).
+
+## Decisions against the design-system artifact
+
+The "AntriAja Design System" artifact differs from this spec in three places. Decided 2026-11-23:
+
+- **Called state stays accent green**, not saffron. Amber means "paused" only, so one colour never means both "your turn" and "queue stopped".
+- **No dark "Board" theme in v1.** Revisit the projector board after the dry run (issue #12).
+- **Accent is `#0F6B4B`**, matching the logo. The artifact's `#0B6B57` is the one to change.

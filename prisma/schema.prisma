@@ -100,3 +100,16 @@ model Ticket {
   @@index([eventId])
   @@map("tickets")
 }
+
+// Failed station-PIN attempts, used for per-IP and per-station lockout (no Redis).
+model PinAttempt {
+  id         String   @id @default(uuid()) @db.Uuid
+  stationKey String   @map("station_key") // "counter:<id>" or "gate:<eventId>"
+  ip         String
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([stationKey, ip, createdAt])
+  @@index([stationKey, createdAt])
+  @@index([ip, createdAt])
+  @@map("pin_attempts")
+}

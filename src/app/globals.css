@@ -1,17 +1,62 @@
+/* Design tokens: see docs/ui.md ("Look", "Brand"). Single light theme on purpose. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --surface: #f7f5f0; /* warm off-white: less glare than #fff on phones outdoors */
+  --surface-raised: #ffffff;
+  --surface-sunken: #ece8df;
+  --ink: #1a1f1c;
+  --ink-muted: #545b57; /* 6.4:1 on --surface */
+  --line: #d6d1c6; /* decorative only, not for control borders */
+  --line-strong: #868b86; /* 3.4:1 on --surface-raised, for control borders */
+
+  --accent: #0f6b4b; /* the one accent; white on it is 6.5:1 */
+  --on-accent: #ffffff;
+  --accent-soft: #d9eee6;
+
+  /* Status colours, reserved: amber = paused, red = error or closed. */
+  --warning-soft: #fdf0c8;
+  --warning-ink: #6b4a00;
+  --warning-line: #a87a00;
+  --danger: #b42318;
+  --danger-soft: #fbe4e1;
+
+  --focus: #1f5fd6;
+
+  --font-sans: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --tap-min: 48px;
+  --tap-primary: 64px;
+
+  --text-caption: 13px;
+  --text-label: 15px;
+  --text-body: 17px;
+  --text-heading: 20px;
+  --text-title: 28px;
+
+  color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html {
   height: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 html,
@@ -24,26 +69,544 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ink);
+  background: var(--surface);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
 a {
   color: inherit;
+}
+
+a[href],
+button,
+summary,
+select,
+label[for] {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.wordmark {
+  font-weight: 800;
+  font-size: var(--text-heading);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.wordmark span {
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Admin screens (feat/3-admin) use these names. Aliased to the shared tokens above where one exists. */
+:root {
+  --paper: var(--surface-raised);
+  --panel: var(--accent-soft);
+  --rule: var(--line);
+  --accent-strong: #0a5238;
+  --accent-ink: var(--on-accent);
+  --danger-wash: var(--danger-soft);
+  --danger-ink: #8f1d14;
+  --warn-wash: var(--warning-soft);
+  --warn-ink: var(--warning-ink);
+  --space-5: 1.5rem;
+  --space-7: 4rem;
+  --gutter: 1rem;
+  --radius: 6px;
+  --radius-mark: 10px;
+  --tap: 2.75rem;
+  --font: var(--font-sans);
+}
+
+@media (min-width: 40rem) {
+  :root {
+    --gutter: 1.5rem;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: clamp(1.5rem, 1.15rem + 1.6vw, 2.125rem);
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: clamp(1.1875rem, 1.05rem + 0.6vw, 1.5rem);
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+a:hover {
+  color: var(--accent-strong);
+}
+
+/* Affordance: every enabled control shows a pointer, disabled ones show not-allowed. */
+
+a[href],
+button:not(:disabled),
+summary,
+select:not(:disabled),
+label[for],
+input[type="checkbox"]:not(:disabled),
+input[type="radio"]:not(:disabled),
+[role="button"] {
+  cursor: pointer;
+}
+
+button:disabled,
+select:disabled,
+input:disabled {
+  cursor: not-allowed;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The brand appears in the page header only (docs/ui.md). */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  color: var(--ink);
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+.brand:hover {
+  color: var(--ink);
+}
+
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.5rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-mark);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--gutter);
+  border-bottom: 2px solid var(--ink);
+}
+
+.site-header .who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  min-width: 0;
+}
+
+.who-email {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+
+.page {
+  width: 100%;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: var(--space-5) var(--gutter) var(--space-7);
+}
+
+.page > * + * {
+  margin-top: var(--space-6);
+}
+
+.page-head > * + * {
+  margin-top: var(--space-2);
+}
+
+.lead {
+  color: var(--ink-muted);
+  max-width: 40rem;
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  font-size: 0.9375rem;
+}
+
+.block > * + * {
+  margin-top: var(--space-4);
+}
+
+.block + .block {
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--rule);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  padding: 0.5rem 1.125rem;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: var(--accent-ink);
+}
+
+.btn:active:not(:disabled) {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.btn-quiet {
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.btn-quiet:hover:not(:disabled) {
+  background: var(--panel);
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.btn-quiet:active:not(:disabled) {
+  background: var(--rule);
+  border-color: var(--ink);
+}
+
+.btn:disabled {
+  background: #e3e7e5;
+  border-color: #b9c1bd;
+  color: #5a5a5a;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 40rem) {
+  .fields.two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+  align-content: start;
+}
+
+.field label,
+.field .label {
+  font-weight: 700;
+}
+
+.hint {
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+
+/* 16px minimum keeps mobile browsers from zooming on focus. */
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+
+input[type="text"]:hover,
+input[type="number"]:hover {
+  border-color: var(--ink);
+}
+
+input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--tap);
+  font-weight: 700;
+}
+
+.check input {
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: var(--accent);
+}
+
+/* Status switch: native radios so keyboard arrows work; the radio dot is the non-color cue. */
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.choices legend {
+  padding: 0;
+  margin-bottom: var(--space-1);
+  font-weight: 700;
+}
+
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: 0.25rem 0.875rem 0.25rem 0.75rem;
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.choice:hover {
+  border-color: var(--ink);
+  background: var(--panel);
+}
+
+.choice:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--panel);
+  font-weight: 700;
+}
+
+.choice:has(input:disabled) {
+  background: #e3e7e5;
+  color: #5a5a5a;
+}
+
+.choice input {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--accent);
+}
+
+.notice {
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.notice.error {
+  border-color: var(--danger);
+  background: var(--danger-wash);
+  color: var(--danger-ink);
+  font-weight: 600;
+}
+
+.notice.warn {
+  border-color: var(--warn-ink);
+  background: var(--warn-wash);
+  color: var(--warn-ink);
+}
+
+.status-text {
+  color: var(--ink-muted);
+}
+
+/* An empty live region stays in the accessibility tree but takes no space. */
+
+.status-text:empty {
+  position: absolute;
+}
+
+.rows {
+  list-style: none;
+  padding: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.rows > li {
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.rows > li:last-child {
+  border-bottom: 0;
+}
+
+.event-row {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.event-row a {
+  font-size: 1.1875rem;
+  font-weight: 700;
+}
+
+.meta {
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+
+.counter-row {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.counter-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.code-mark {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 3rem;
+  height: 3rem;
+  padding: 0 0.5rem;
+  border-radius: var(--radius-mark);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.counter-controls {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 64rem) {
+  .counter-row {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.pin-panel {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+.pin-value {
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper);
+  font-size: clamp(2rem, 1.4rem + 3vw, 3rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  /* Wide digits are read aloud to staff, so each one must stay distinct. */
+  letter-spacing: 0.18em;
+}
+
+.signin {
+  max-width: 28rem;
+  margin: var(--space-7) auto 0;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.signin .btn {
+  width: 100%;
+}
+
+.field-error {
+  color: var(--danger-ink);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.pin-warning {
+  max-width: 34rem;
 }

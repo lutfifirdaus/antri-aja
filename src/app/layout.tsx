@@ -1,25 +1,27 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+// Plus Jakarta Sans (OFL, fonts/OFL.txt), self-hosted so the build needs no Google Fonts access.
+const jakarta = localFont({
+  src: "./fonts/PlusJakartaSans-latin-wght.woff2",
+  variable: "--font-jakarta",
+  weight: "200 800",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "AntriAja",
-  description: "Queue management for events",
+  title: { template: "%s · AntriAja", default: "AntriAja" },
+  description: "Antrean untuk acara yang dibagikan di tempat.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f7f5f0",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="id" className={jakarta.variable}>
       <body>{children}</body>
     </html>
   );
